@@ -2,13 +2,14 @@ import React, { useEffect } from 'react'
 import { FlatList, View, Text, Platform, StyleSheet } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
+import { DrawerActions } from 'react-navigation-drawer'
+
 
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import CustomHeaderButton from '../../components/UI/HeaderButton'
 
 import ProductItem from '../../components/shop/ProductItem'
 import { addToCart } from '../../store/actions/cartActions'
-
 
 
 const ProductOverviewScreen = props => {
@@ -54,15 +55,22 @@ const styles = StyleSheet.create({})
 
 
 ProductOverviewScreen.navigationOptions = navData => {
-
+    const {navigation} = navData
 
     return {
         headerTitle: 'All Products',
+        headerLeft: (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item tittle='Menu'
+                    iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
+                    onPress={() =>  navData.navigation.toggleDrawer()} />
+            </HeaderButtons>
+        ),
         headerRight: (
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                <Item tittle='Cart' 
-                    iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'} 
-                    onPress={() => navData.navigation.navigate('Cart')}/>
+                <Item tittle='Cart'
+                    iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                    onPress={() => navigation.navigate('Cart')} />
             </HeaderButtons>
         )
     }
