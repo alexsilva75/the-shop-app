@@ -1,16 +1,25 @@
-import React from 'react'
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native'
+import React, { useState } from 'react'
+import {
+    View,
+    Text,
+    FlatList,
+    Button,
+    StyleSheet,
+    ActivityIndicator
+} from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
 import Colors from '../../constants/Colors'
 import CartItem from '../../components/shop/CartItem'
 import { removeFromCart } from '../../store/actions/cartActions'
-import {addOrder} from '../../store/actions/orderActions'
+import { addOrder } from '../../store/actions/orderActions'
 
 import Card from '../../components/UI/Card'
 
 
 const CartScreen = props => {
+    const [isLoading, setIsLoading] = useState(false)
+
     const cartTotalSum = useSelector(state => state.cart.totalSum)
     const cartItems = useSelector(state => {
         const transformedCartItems = []
@@ -37,23 +46,27 @@ const CartScreen = props => {
         dispatch(removeFromCart(productId))
     }
 
-
-    const onAddOrderHandler = (items, sum) => {
-        dispatch(addOrder(items, sum))
+    const onAddOrderHandler = async (items, sum) => {
+        setIsLoading(true)
+        await dispatch(addOrder(items, sum))
+        setIsLoading(false)
     }
 
     return (
         <View style={styles.screen}>
             <Card style={styles.summary}>
                 <Text style={styles.summaryText}>
-                    Total:{' '} 
+                    Total:{' '}
                     <Text style={styles.sum}>R${Math.round(cartTotalSum.toFixed(2) * 100 / 100)}</Text>
                 </Text>
-                <Button
-                    color={Colors.accentColor} title='Order Now'
-                    disabled={cartItems.length > 0 ? false : true}
-                    onPress={()=> onAddOrderHandler(cartItems, cartTotalSum)}
-                />
+
+                {isLoading ? <ActivityIndicator size='small' color={Colors.primaryColor}/> :
+                    (<Button
+                        color={Colors.accentColor} title='Order Now'
+                        disabled={cartItems.length > 0 ? false : true}
+                        onPress={() => onAddOrderHandler(cartItems, cartTotalSum)}
+                    />)
+                }
             </Card>
             <FlatList
                 keyExtractor={(item) => item.productId}
@@ -78,7 +91,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
         padding: 10,
-       
+
 
     },
     summaryText: {
