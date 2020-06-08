@@ -25,6 +25,7 @@ import { fetchProducts } from '../../store/actions/productActions'
 
 const ProductOverviewScreen = props => {
     const [isLoading, setIsLoading] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
     const [error, setError] = useState()
     const products = useSelector(state => state.products.availableProducts)
 
@@ -32,13 +33,13 @@ const ProductOverviewScreen = props => {
 
     const loadProducts = useCallback(async () => {
         setError(null)
-        setIsLoading(true)
+        setIsRefreshing(true)
         try {
             await dispatch(fetchProducts())
         } catch (err) {
             setError(err.message)
         }
-        setIsLoading(false)
+        setIsRefreshing(false)
     }, [dispatch, setIsLoading, setError])
 
     const {navigation} = props //Avoiding unnecessary re-renderings
@@ -52,7 +53,8 @@ const ProductOverviewScreen = props => {
 
 
     useEffect(/* You can't use async here*/() => {
-        loadProducts()
+        setIsLoading(true)
+        loadProducts().then(()=> setIsLoading(false) )
     }, [dispatch, loadProducts])
 
     const onViewDetailHandler = (productId, productTitle) => {
@@ -98,6 +100,9 @@ const ProductOverviewScreen = props => {
 
     return (
         <FlatList
+            
+            onRefresh={loadProducts}
+            refreshing={isRefreshing}
             keyExtractor={(item, index) => item.id}
             data={products}
 
