@@ -32,7 +32,7 @@ const ProductItem = props => {
                         </View>
                         <View style={styles.details}>
                             <Text style={styles.title}>{props.product.title}</Text>
-                            <Text style={styles.price}>{props.product.price}</Text>
+                            <Text style={styles.price}>{props.product.price.toFixed(2)}</Text>
                         </View>
 
                         <View style={styles.actions}>

@@ -5,22 +5,20 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import {enableScreens} from 'react-native-screens'
 
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
+import ReduxThunk from 'redux-thunk'
+
 import {composeWithDevTools} from 'redux-devtools-extension'
 
 import {AppLoading} from 'expo'
 import * as Font from 'expo-font'
 
-
-
-
-
 import ShopNavigator from './navigation/ShopNavigator'
 
 import rootReducer from './store/reducers/rootReducer'
 
-const store = createStore(rootReducer,composeWithDevTools())
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk))
 
 enableScreens()
 

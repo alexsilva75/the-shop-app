@@ -1,5 +1,5 @@
 import PRODUCTS from '../../data/dummy-data'
-import { DELETE_PRODUCT, CREATE_PRODUCT, UPDATE_PRODUCT, updateProduct } from '../actions/productActions'
+import { DELETE_PRODUCT, CREATE_PRODUCT, UPDATE_PRODUCT, SET_PRODUCTS } from '../actions/productActions'
 import Product from '../../models/product'
 const INITIAL_STATE = {
     availableProducts: PRODUCTS,
@@ -9,10 +9,15 @@ const INITIAL_STATE = {
 const productReducer = (state = INITIAL_STATE, action) => {
 
     switch (action.type) {
-        case DELETE_PRODUCT: {
-            console.log('Deleting product in the product reducer: ' + action.pid)
+        case SET_PRODUCTS: {
+            return {
+                availableProducts: action.products,
+                userProducts: action.products.filter(prod => prod.ownerId === 'u1')
+            }
 
-            console.log('All Products: ')
+        }
+        case DELETE_PRODUCT: {
+            
             state.userProducts.forEach(prod => {
                 console.log(prod.title, ' ', prod.id)
             }
@@ -34,10 +39,9 @@ const productReducer = (state = INITIAL_STATE, action) => {
         }
 
         case CREATE_PRODUCT: {
-            console.log('Creating Product...')
-            
+                        
             const newProduct = new Product(
-                new Date().toString(),
+                action.productData.id,
                 'u1',
                 action.productData.title,
                 action.productData.imageUrl,

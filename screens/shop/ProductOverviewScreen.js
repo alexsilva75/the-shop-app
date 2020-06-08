@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
     FlatList,
     Button,
-    Text,
     Platform,
-    StyleSheet
+    ActivityIndicator,
+    StyleSheet,
+    View,
+    Text
 } from 'react-native'
 
 
@@ -19,13 +21,39 @@ import Colors from '../../constants/Colors'
 
 import ProductItem from '../../components/shop/ProductItem'
 import { addToCart } from '../../store/actions/cartActions'
-
+import { fetchProducts } from '../../store/actions/productActions'
 
 const ProductOverviewScreen = props => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState()
     const products = useSelector(state => state.products.availableProducts)
 
-
     const dispatch = useDispatch()
+
+    const loadProducts = useCallback(async () => {
+        setError(null)
+        setIsLoading(true)
+        try {
+            await dispatch(fetchProducts())
+        } catch (err) {
+            setError(err.message)
+        }
+        setIsLoading(false)
+    }, [dispatch, setIsLoading, setError])
+
+    const {navigation} = props //Avoiding unnecessary re-renderings
+    useEffect(() => {
+        const willFocusSub = navigation.addListener('willFocus', loadProducts)
+
+        return () => {
+            willFocusSub.remove()
+        }
+    },[loadProducts])
+
+
+    useEffect(/* You can't use async here*/() => {
+        loadProducts()
+    }, [dispatch, loadProducts])
 
     const onViewDetailHandler = (productId, productTitle) => {
         props.navigation.navigate({
@@ -38,11 +66,35 @@ const ProductOverviewScreen = props => {
         dispatch(addToCart(product))
     }
 
-    // useEffect(()=>{
-    //     alert('Product Added!')
+    if (error) {
+        return (
+            <View style={styles.centered}>
+                <Text>An error occurred: {error}</Text>
+                <Button title='Try again'
+                    onPress={loadProducts}
+                    color={Colors.primaryColor}
+                />
+            </View>
+        )
+    }
+    if (isLoading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator
+                    size='large'
+                    color={Colors.primaryColor}
+                />
+            </View>
+        )
+    }
 
-
-    // },[products] )
+    if (!isLoading && products.length === 0) {
+        return (
+            <View style={styles.centered}>
+                <Text>No products found. Maybe start adding some!</Text>
+            </View>
+        )
+    }
 
     return (
         <FlatList
@@ -66,13 +118,17 @@ const ProductOverviewScreen = props => {
                         />
                     </ProductItem>
                 )}
-
         />
     )
 }
 
-const styles = StyleSheet.create({})
-
+const styles = StyleSheet.create({
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+})
 
 ProductOverviewScreen.navigationOptions = navData => {
     const { navigation } = navData
