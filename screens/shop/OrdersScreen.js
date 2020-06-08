@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, FlatList, Text,  Platform, StyleSheet } from 'react-native'
+import { View, FlatList, Text, Platform, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import CustomHeaderButton from '../../components/UI/HeaderButton'
+import OrderItem from '../../components/shop/OrderItem'
 
 const OrdersScreen = props => {
     const orders = useSelector(state => state.orders.orders)
@@ -12,7 +13,13 @@ const OrdersScreen = props => {
         <FlatList
             keyExtractor={item => item.id}
             data={orders}
-            renderItem={(itemData) => (<View><Text>{itemData.item.totalSum}</Text></View>)}
+            renderItem={(itemData) => (
+                <OrderItem
+                    sum={itemData.item.totalSum}
+                    date={itemData.item.date}
+                    items={itemData.item.items}
+                />
+            )}
         />
     )
 }
@@ -22,7 +29,7 @@ const styles = StyleSheet.create({
 })
 
 OrdersScreen.navigationOptions = navData => {
-    const {navigation} = navData
+    const { navigation } = navData
     return {
         headerTitle: 'Your Orders',
         headerLeft: (

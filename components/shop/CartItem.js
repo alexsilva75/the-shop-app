@@ -12,16 +12,16 @@ const CartItem = props => (
     <View style={styles.cartItem}>
         <View style={styles.itemData}>
             <Text style={styles.quantity}>{props.item.quantity}</Text>
-            <Text style={styles.title}>{props.item.title}</Text>
+            <Text style={styles.title}>{props.item.productTitle}</Text>
         </View>
         <View style={styles.itemData}>
             <Text style={styles.amount}>{props.item.sum.toFixed(2)}</Text>
-            <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton} >
+            {props.deletable && <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton} >
                 <Ionicons name={Platform === 'android' ? 'md-trash' : 'ios-trash'}
                     size={23}
                     color='red'
                 />
-            </TouchableOpacity>
+            </TouchableOpacity>}
         </View>
     </View>
 )
