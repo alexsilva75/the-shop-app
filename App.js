@@ -14,7 +14,7 @@ import {composeWithDevTools} from 'redux-devtools-extension'
 import {AppLoading} from 'expo'
 import * as Font from 'expo-font'
 
-import ShopNavigator from './navigation/ShopNavigator'
+import NavigationContainer from './navigation/NavigationContainer'
 
 import rootReducer from './store/reducers/rootReducer'
 
@@ -43,7 +43,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <NavigationContainer />
     </Provider>
   );
 }

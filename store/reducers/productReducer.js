@@ -2,8 +2,8 @@ import PRODUCTS from '../../data/dummy-data'
 import { DELETE_PRODUCT, CREATE_PRODUCT, UPDATE_PRODUCT, SET_PRODUCTS } from '../actions/productActions'
 import Product from '../../models/product'
 const INITIAL_STATE = {
-    availableProducts: PRODUCTS,
-    userProducts: PRODUCTS.filter(prod => prod.ownerId === 'u1')
+    availableProducts: [],
+    userProducts: []
 }
 
 const productReducer = (state = INITIAL_STATE, action) => {
@@ -12,19 +12,19 @@ const productReducer = (state = INITIAL_STATE, action) => {
         case SET_PRODUCTS: {
             return {
                 availableProducts: action.products,
-                userProducts: action.products.filter(prod => prod.ownerId === 'u1')
+                userProducts: action.userProducts //action.products.filter(prod => prod.ownerId === 'u1')
             }
 
         }
         case DELETE_PRODUCT: {
             
-            state.userProducts.forEach(prod => {
-                console.log(prod.title, ' ', prod.id)
-            }
-            )
+            // state.userProducts.forEach(prod => {
+            //     console.log(prod.title, ' ', prod.id)
+            // }
+            // )
 
             const updatedProducts = state.userProducts.filter(prod => prod.id != action.pid)
-            console.log('Filtered Products: ')
+            //console.log('Filtered Products: ')
             updatedProducts.forEach(prod => {
                 console.log(prod.title, ' ', prod.id)
             }
@@ -42,7 +42,7 @@ const productReducer = (state = INITIAL_STATE, action) => {
                         
             const newProduct = new Product(
                 action.productData.id,
-                'u1',
+                action.productData.ownerId,
                 action.productData.title,
                 action.productData.imageUrl,
                 action.productData.description,
@@ -55,13 +55,13 @@ const productReducer = (state = INITIAL_STATE, action) => {
         }
 
         case UPDATE_PRODUCT: {
-            console.log('Updating a product: '+ action.productData.id)
+            //console.log('Updating a product: '+ action.productData.id)
             const productIndex = state.userProducts.findIndex(
                     prod => prod.id === action.productData.id)
            
-            console.log('Product Index: '+ productIndex)
-            console.log('Product Title: '+ action.productData.title)
-            console.log('Product Owner Id: '+state.userProducts[productIndex].ownerId)
+            // console.log('Product Index: '+ productIndex)
+            // console.log('Product Title: '+ action.productData.title)
+            // console.log('Product Owner Id: '+state.userProducts[productIndex].ownerId)
 
             const updatedProduct = new Product(
                 action.productData.id,
@@ -72,7 +72,7 @@ const productReducer = (state = INITIAL_STATE, action) => {
                 state.userProducts[productIndex].price
             )
 
-            console.log('Updated Product Title: '+updatedProduct.title)
+            //console.log('Updated Product Title: '+updatedProduct.title)
 
             const updatedUserProducts = [...state.userProducts] //cria uma nova referencia
             updatedUserProducts[productIndex] = updatedProduct
