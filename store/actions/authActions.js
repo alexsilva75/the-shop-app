@@ -4,6 +4,7 @@ export const SIGNUP = 'SIGNUP'
 export const LOGIN = 'LOGIN'
 export const AUTHENTICATE = 'AUTHENTICATE'
 export const LOGOUT = 'LOGOUT'
+import {apiKey} from '../../secret'
 
 let timer
 
@@ -21,7 +22,7 @@ export const signup = (email, password) => {
     return async dispatch => {
         //try {
         const response = await fetch(
-            'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyALDAkJq-tXKOjrDQCVc-3a9QD4WhiWixk',
+            `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: {
@@ -83,7 +84,7 @@ export const login = (email, password) => {
     return async dispatch => {
         //try {
         const response = await fetch(
-            'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyALDAkJq-tXKOjrDQCVc-3a9QD4WhiWixk',
+            `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: {
